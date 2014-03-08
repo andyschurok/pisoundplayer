@@ -7,6 +7,9 @@
 #include <wiringPi.h>
 #include <iostream>
 #include "soundplayer.h"
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sstream>
 
 #define	PIN_1		1
 #define	PIN_2		2
@@ -20,19 +23,19 @@ SoundPlayer *sp;
 
 std::string getFilePath(int pin)
 {
-   /* std::string mediadir = "/media";
+   std::string mediadir = "/media";
     DIR *media;
     DIR *stick;
     DIR *pinDir;
-    struct dirent *entry;
-    struct stat stat;
+    struct dirent *ent;
+    struct stat st;
     std::stringstream path;
-
-    media = opendir(mediadir);
+    path << mediadir;
+    media = opendir(mediadir.c_str());
     while((ent = readdir(media)) != NULL)
     {
-        const string file_name = ent->d_name;
-        const string full_file_name = directory + "/" + file_name;
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = mediadir + "/" + file_name;
 
         //get the dirent that isn't . or ..
         if (file_name[0] == '.')
@@ -43,19 +46,19 @@ std::string getFilePath(int pin)
         const bool is_directory = (st.st_mode & S_IFDIR) != 0;
         if (is_directory){
             //create the full string
+            path << "/" << file_name;
         }
     }
-    */
-    /*
-DIR *dir;
-    class dirent *ent;
-    class stat st;
+    std::cout << "sstream after media =" << path.str() <<std::endl;
+    
+    
 
-    dir = opendir(directory);
-    while ((ent = readdir(dir)) != NULL) {
-        const string file_name = ent->d_name;
-        const string full_file_name = directory + "/" + file_name;
-
+    stick = opendir(path.str().c_str());
+    while ((ent = readdir(stick)) != NULL) {
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = path.str() + "/" + file_name;
+        char pinchar [1];
+        sprintf(pinchar, "%d", pin);
         if (file_name[0] == '.')
             continue;
 
@@ -64,10 +67,41 @@ DIR *dir;
 
         const bool is_directory = (st.st_mode & S_IFDIR) != 0;
 
-        if (is_directory)
-            continue;*/
+        if (is_directory){
+             if(strcmp(file_name.c_str(), pinchar) == 0)
+             {
+                  std::cout << "found the numbered dir" << std::endl;
+                 path << "/" << file_name;
+             }
+        }
+            continue;
 
-return "/media/E384/1/1A.wav";
+    }
+       std::cout << "path aaafter pindirr " << path.str() << std::endl;
+
+    pinDir = opendir(path.str().c_str());
+    while ((ent = readdir(pinDir)) != NULL) {
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = path.str() + "/" + file_name;
+        char pinchar [1];
+        sprintf(pinchar, "%d", pin);
+        if (file_name[0] == '.')
+            continue;
+
+        if (stat(full_file_name.c_str(), &st) == -1)
+            continue;
+
+        const bool is_directory = (st.st_mode & S_IFDIR) != 0;
+
+        if (is_directory){
+             continue;
+        }else{
+            path << "/" << file_name;
+	    continue;
+	}
+    }
+       std::cout << "path aaafter getting file " << path.str() << std::endl;
+return path.str();//"/media/E0D2-9615/1/1A.wav";
 
 }
 
@@ -108,10 +142,9 @@ void pinSixPressed()
 handlePinPress(6);
 }
 
-
-void main(){
+int main(){
     std::cout << "starting the soundplayer" << std::endl;
-
+    sp = new SoundPlayer();
 
     if (wiringPiSetup () < 0)
     {
@@ -166,7 +199,7 @@ void main(){
         std::cout << "entered: "<< num;
         handlePinPress(num);
 
-
+         std::cout << "loop again" << std::endl;
 
 
     }

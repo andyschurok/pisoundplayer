@@ -3,6 +3,7 @@
 #include <sstream>
 #include <pthread.h>
 #include <iostream>
+#include <cstdlib>
 
 SoundPlayer::SoundPlayer()
 {
@@ -15,7 +16,7 @@ SoundPlayer::~SoundPlayer()
 }
 
 
-bool SoundPlayer::run(std:string path)
+bool SoundPlayer::run(std::string path)
 {
     if(this->running)
     {
@@ -38,7 +39,7 @@ static void *SoundPlayer::playSound(void* data)
       cmd << " ";
       cmd << sp->file;
       std::cout << "playing cmd = " << cmd.str() << std::endl;
-      system(cmd.str());
+      system(cmd.str().c_str());
 
 
       std::cout << "SoundPlayer::execute() Finished!" << std::endl;
