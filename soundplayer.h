@@ -10,7 +10,7 @@ public:
     ~SoundPlayer();
 
 
-    bool run();
+    bool run(std::string);
 
 private:
     pthread_t thread;

@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <wiringPi.h>
+#include <iostream>
 #include "soundplayer.h"
 
 #define	PIN_1		1
@@ -157,6 +158,14 @@ void main(){
       return 1 ;
     }
     for(;;){
+
+        /* test code */
+        std::string in;
+        std::cin >> in;
+        int num = atoi(in.c_str());
+        std::cout << "entered: "<< num;
+        handlePinPress(num);
+
 
 
 
