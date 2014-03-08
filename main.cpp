@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sstream>
+#include <errno.h>
 
 #define	PIN_1		1
 #define	PIN_2		2
@@ -23,6 +24,9 @@ SoundPlayer *sp;
 
 std::string getFilePath(int pin)
 {
+if((pin==0)||(pin>6)){
+return "";
+}
    std::string mediadir = "/media";
     DIR *media;
     DIR *stick;
@@ -36,7 +40,7 @@ std::string getFilePath(int pin)
     {
         const std::string file_name = ent->d_name;
         const std::string full_file_name = mediadir + "/" + file_name;
-
+        std::cout << "level1: " <<full_file_name << " "<<file_name << std::endl;
         //get the dirent that isn't . or ..
         if (file_name[0] == '.')
             continue;
@@ -52,13 +56,14 @@ std::string getFilePath(int pin)
     std::cout << "sstream after media =" << path.str() <<std::endl;
     
     
-
+/*
     stick = opendir(path.str().c_str());
     while ((ent = readdir(stick)) != NULL) {
         const std::string file_name = ent->d_name;
         const std::string full_file_name = path.str() + "/" + file_name;
         char pinchar [1];
         sprintf(pinchar, "%d", pin);
+         std::cout << "Level2"<<full_file_name << " " <<file_name<<std::endl;
         if (file_name[0] == '.')
             continue;
 
@@ -74,10 +79,11 @@ std::string getFilePath(int pin)
                  path << "/" << file_name;
              }
         }
-            continue;
 
     }
-       std::cout << "path aaafter pindirr " << path.str() << std::endl;
+*/
+	path << "/" << pin;
+       std::cout << "path aaafter pindirr " << path.str() << "errno" << errno << std::endl;
 
     pinDir = opendir(path.str().c_str());
     while ((ent = readdir(pinDir)) != NULL) {
@@ -112,8 +118,9 @@ void handlePinPress(int pin)
 
     std::string path = getFilePath(pin);
 
-    sp->run(path);
-
+    if (path != ""){
+        sp->run(path);
+    }
     //
 }
 
@@ -200,7 +207,6 @@ int main(){
         handlePinPress(num);
 
          std::cout << "loop again" << std::endl;
-
 
     }
     return 0;
