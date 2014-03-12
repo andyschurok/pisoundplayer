@@ -83,14 +83,14 @@ return "";
     }
 */
 	path << "/" << pin;
-       std::cout << "path aaafter pindirr " << path.str() << "errno" << errno << std::endl;
+       std::cout << "path after pindir " << path.str() << " errno " << errno << std::endl;
 
     pinDir = opendir(path.str().c_str());
     while ((ent = readdir(pinDir)) != NULL) {
         const std::string file_name = ent->d_name;
         const std::string full_file_name = path.str() + "/" + file_name;
-        char pinchar [1];
-        sprintf(pinchar, "%d", pin);
+       std::cout <<"level3=" << full_file_name << ":" << file_name << std::endl;
+       
         if (file_name[0] == '.')
             continue;
 
@@ -106,7 +106,7 @@ return "";
 	    continue;
 	}
     }
-       std::cout << "path aaafter getting file " << path.str() << std::endl;
+       std::cout << "path after getting file " << path.str() << std::endl;
 return path.str();//"/media/E0D2-9615/1/1A.wav";
 
 }
@@ -197,18 +197,20 @@ int main(){
       fprintf (stderr, "Unable to setup ISR: %s\n", strerror (errno)) ;
       return 1 ;
     }
+    std::cout << "starting the pi  sound player" <<std::endl;
     for(;;){
 
         /* test code */
-        std::string in;
+/*        std::string in;
         std::cin >> in;
         int num = atoi(in.c_str());
         std::cout << "entered: "<< num;
         handlePinPress(num);
 
          std::cout << "loop again" << std::endl;
-
+*/
     }
+    std::cout << "Going to return" <<std::endl;
     return 0;
 }
 
